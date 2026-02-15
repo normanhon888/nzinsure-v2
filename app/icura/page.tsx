@@ -19,14 +19,17 @@ export default function IcuraPage() {
       eventType = 'CLIENT_UNCERTAIN'
     }
 
-    await fetch('/api/events', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const res = await fetch("/api/events", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        client_id: 'anonymous',
+        client_id: "anonymous",
         event_type: eventType
       })
     })
+    
+    const data = await res.json()
+    setResult(data.proposed_state)
 
     setResult(eventType)
   }
