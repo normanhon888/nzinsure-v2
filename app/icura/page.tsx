@@ -1,5 +1,30 @@
 ﻿'use client'
 
+const [result, setResult] = useState<string | null>(null)
+
+async function handleChoice(type: string) {
+  let eventType = ""
+
+  if (type === "no_change") {
+    eventType = "CLIENT_NO_CHANGE"
+  } else if (type === "major_change") {
+    eventType = "CLIENT_MAJOR_CHANGE"
+  } else {
+    eventType = "CLIENT_UNCERTAIN"
+  }
+
+  await fetch("/api/events", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      client_id: "anonymous",
+      event_type: eventType
+    })
+  })
+
+  setResult(eventType)
+}
+
 import { useEffect, useState } from 'react'
 
 type Mode = 'healthy' | 'degraded' | 'outage'
@@ -43,64 +68,48 @@ export default function IcuraPage() {
     )
   }
 
-  return (
-    <main className="min-h-screen flex flex-col items-center justify-center bg-white px-4">
-      <h1 className="text-2xl font-semibold mb-6">
-        Smart Consultation
-      </h1>
-
-      <form
-        onSubmit={async (e) => {
-          e.preventDefault()
-
-          const form = e.currentTarget
-          const formData = new FormData(form)
-
-          const payload = {
-            name: formData.get('name'),
-            email: formData.get('email'),
-            type: formData.get('type'),
-            message: formData.get('message')
-          }
-
-          try {
-            const res = await fetch('/api/lead', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(payload)
-            })
-
-            const result = await res.json()
-
-            if (result.success) {
-              form.reset()
-              alert('Consultation submitted successfully.')
-            } else {
-              alert('Submission failed.')
-            }
-
-          } catch (error) {
-            alert('Network error.')
-          }
-        }}
-        className="w-full max-w-md space-y-4"
-      >
-        <input name="name" placeholder="Your Name" required className="w-full border px-4 py-2 rounded" />
-        <input name="email" placeholder="Email" required className="w-full border px-4 py-2 rounded" />
-
-        <select name="type" required className="w-full border px-4 py-2 rounded">
-          <option value="">Select Type</option>
-          <option value="personal">Personal</option>
-          <option value="business">Business</option>
-          <option value="project">Project</option>
-        </select>
-
-        <textarea name="message" placeholder="Brief description" className="w-full border px-4 py-2 rounded" />
-
-        <button type="submit" className="w-full bg-black text-white py-3 rounded">
-          Submit Consultation
-        </button>
-      </form>
-    </main>
-  )
+ return (
+   <main className="min-h-screen flex flex-col items-center justify-center bg-white px-6">
+     <h1 className="text-3xl font-semibold mb-10">
+       iCura 判断入口
+     </h1>
+ 
+     <div className="space-y-6 text-center max-w-xl">
+ 
+       <p className="text-lg">
+         你的风险结构是否发生变化？
+       </p>
+ 
+       <div className="flex flex-col gap-4">
+ 
+         <button
+           onClick={() => handleChoice('no_change')}
+           className="px-6 py-3 border rounded-lg"
+         >
+           没有明显变化
+         </button>
+ 
+         <button
+           onClick={() => handleChoice('major_change')}
+           className="px-6 py-3 border rounded-lg"
+         >
+           有重要变化
+         </button>
+ 
+         <button
+           onClick={() => handleChoice('uncertain')}
+           className="px-6 py-3 border rounded-lg"
+         >
+           不确定
+         </button>
+ 
+       </div>
+       {result && (
+         <div className="mt-8 text-lg font-medium">
+           判断结果：{result}
+         </div>
+        )} 
+     </div>
+   </main>
+ )
 }
