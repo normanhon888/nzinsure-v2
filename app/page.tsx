@@ -1,82 +1,158 @@
 export default function HomePage() {
   return (
-    <main className="bg-slate-50 text-slate-900">
-      <section className="mx-auto max-w-6xl px-4 pb-14 pt-12 sm:px-6 sm:pt-16 lg:px-8 lg:pt-20">
-        <div className="grid items-center gap-10 lg:grid-cols-2">
-          <div className="space-y-6">
-            <p className="inline-flex w-fit rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold tracking-wide text-slate-700">
-              iCura Smart Consultation
+    <main className="bg-[#F5F7FA] text-[#0E1A2B]">
+      <section className="mx-auto max-w-[1400px] px-6 py-32 lg:px-12">
+        <div className="grid items-center gap-14 md:grid-cols-2">
+          <div className="space-y-8">
+            <p className="inline-flex rounded-full border border-[#C8A75E]/40 bg-white px-4 py-1.5 text-sm font-medium text-[#0E1A2B]">
+              Strategic Insurance Advisory
             </p>
-            <h1 className="text-4xl font-semibold leading-tight sm:text-5xl lg:text-6xl">
-              Insurance Advice Built Around Your Real Risk
+            <h1 className="text-5xl font-semibold leading-[1.2] lg:text-6xl">
+              Structured advice for complex risk and long-term resilience.
             </h1>
-            <p className="max-w-xl text-base leading-relaxed text-slate-600 sm:text-lg">
-              We do not start just with price. We begin with your risk profile, then shape cover and cost to fit your life or business.
+            <p className="mt-10 max-w-2xl text-lg leading-relaxed text-[#0E1A2B]/80">
+              We advise business leaders and families through disciplined risk assessment, policy architecture, and annual governance.
+              Every recommendation is built for clarity, continuity, and measurable protection outcomes.
             </p>
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-              <a
-                href="/icura"
-                className="inline-flex items-center justify-center rounded-lg bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-700"
-              >
-                Start iCura Consultation
-              </a>
+            <div className="mt-2 flex flex-wrap gap-4">
               <a
                 href="/advisor"
-                className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-5 py-3 text-sm font-medium text-slate-800 transition hover:bg-slate-100"
+                className="inline-flex items-center justify-center rounded-xl bg-[#0E1A2B] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#15263F]"
               >
-                Talk to Advisor
+                Schedule Advisory Review
+              </a>
+              <a
+                href="/icura"
+                className="inline-flex items-center justify-center rounded-xl border border-[#0E1A2B]/20 bg-white px-6 py-3 text-sm font-semibold text-[#0E1A2B] transition-colors hover:border-[#C8A75E] hover:text-[#0E1A2B]"
+              >
+                View Advisory Process
               </a>
             </div>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-            <h2 className="text-xl font-semibold sm:text-2xl">Why iCura</h2>
-            <div className="mt-5 space-y-4 text-sm text-slate-700 sm:text-base">
-              <p>1. Compare policies with context, not just headline premium.</p>
-              <p>2. Balance budget, exclusions, and claim certainty.</p>
-              <p>3. Keep your protection aligned as life changes.</p>
-            </div>
+          <div className="flex h-full flex-col justify-center rounded-2xl border border-[#0E1A2B]/10 bg-white p-10">
+            <h2 className="text-3xl font-semibold">Advisory Mandate</h2>
+            <ul className="mt-6 space-y-4 text-base leading-relaxed text-[#0E1A2B]/80">
+              <li>Risk-led coverage design across liability, property, and people.</li>
+              <li>Policy decisions grounded in operational and household realities.</li>
+              <li>Governance cadence that keeps protection aligned year-round.</li>
+            </ul>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 pb-16 sm:px-6 lg:px-8">
-        <div className="grid gap-6 md:grid-cols-2">
-          <article className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-            <h3 className="text-2xl font-semibold">Business</h3>
-            <p className="mt-3 text-sm leading-relaxed text-slate-600 sm:text-base">
-              Protect cash flow, contracts, and continuity with a risk-first plan across liability, property, and people.
+      <section className="mx-auto max-w-7xl px-6 py-28 lg:px-12">
+        <div className="space-y-16">
+          <div className="max-w-3xl space-y-4">
+            <h2 className="text-3xl font-semibold">Our Structured Method</h2>
+            <p className="text-lg leading-relaxed text-[#0E1A2B]/80">
+              A disciplined framework to ensure coverage quality, financial efficiency, and decision confidence.
             </p>
-            <ul className="mt-5 space-y-2 text-sm text-slate-700 sm:text-base">
-              <li>Public & product liability review</li>
-              <li>Key person and income protection options</li>
-              <li>Renewal stress testing before premium negotiation</li>
-            </ul>
-            <a
-              href="/icura"
-              className="mt-6 inline-flex items-center rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-800 transition hover:bg-slate-100"
-            >
-              Explore Business Consultation
-            </a>
-          </article>
+          </div>
 
-          <article className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-            <h3 className="text-2xl font-semibold">Personal</h3>
-            <p className="mt-3 text-sm leading-relaxed text-slate-600 sm:text-base">
-              Build confidence for family, health, and future income with cover decisions based on your actual obligations.
+          <div className="grid gap-12 md:grid-cols-3">
+            <article className="rounded-2xl border border-[#0E1A2B]/10 bg-white p-7">
+              <p className="text-sm font-semibold uppercase tracking-wide text-[#C8A75E]">01</p>
+              <h3 className="mt-3 text-2xl font-semibold">Risk Discovery</h3>
+              <p className="mt-4 text-base leading-relaxed text-[#0E1A2B]/80">
+                We map exposures, obligations, and dependency points to establish a clear protection baseline.
+              </p>
+            </article>
+            <article className="rounded-2xl border border-[#0E1A2B]/10 bg-white p-7">
+              <p className="text-sm font-semibold uppercase tracking-wide text-[#C8A75E]">02</p>
+              <h3 className="mt-3 text-2xl font-semibold">Coverage Structuring</h3>
+              <p className="mt-4 text-base leading-relaxed text-[#0E1A2B]/80">
+                We evaluate policy architecture, exclusions, and limits to align protection with material risks.
+              </p>
+            </article>
+            <article className="rounded-2xl border border-[#0E1A2B]/10 bg-white p-7">
+              <p className="text-sm font-semibold uppercase tracking-wide text-[#C8A75E]">03</p>
+              <h3 className="mt-3 text-2xl font-semibold">Governance & Review</h3>
+              <p className="mt-4 text-base leading-relaxed text-[#0E1A2B]/80">
+                We set an annual advisory rhythm so your portfolio evolves with strategic and personal change.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 py-28 lg:px-12">
+        <div className="grid min-h-[280px] gap-12 rounded-2xl border border-[#0E1A2B]/10 bg-white p-10 md:grid-cols-2">
+          <div className="space-y-7">
+            <h2 className="text-3xl font-semibold">Business Advisory</h2>
+            <p className="text-lg leading-relaxed text-[#0E1A2B]/80">
+              For owners and executive teams requiring continuity-focused insurance governance.
             </p>
-            <ul className="mt-5 space-y-2 text-sm text-slate-700 sm:text-base">
-              <li>Life, trauma, and disability cover prioritization</li>
-              <li>Gap checks against mortgage and family needs</li>
-              <li>Clear trade-offs between premiums and certainty</li>
+          </div>
+          <ul className="space-y-4 text-base leading-relaxed text-[#0E1A2B]/80">
+            <li>Liability and contract exposure analysis.</li>
+            <li>Property, interruption, and cash-flow resilience design.</li>
+            <li>Leadership and key-person protection alignment.</li>
+            <li>Structured renewal preparation and insurer negotiation support.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 py-28 lg:px-12">
+        <div className="grid min-h-[280px] gap-12 rounded-2xl border border-[#0E1A2B]/10 bg-white p-10 md:grid-cols-2">
+          <div className="space-y-7">
+            <h2 className="text-3xl font-semibold">Personal Advisory</h2>
+            <p className="text-lg leading-relaxed text-[#0E1A2B]/80">
+              For households seeking clear coverage decisions across income, health, and intergenerational obligations.
+            </p>
+          </div>
+          <ul className="space-y-4 text-base leading-relaxed text-[#0E1A2B]/80">
+            <li>Life, disability, and trauma cover prioritization.</li>
+            <li>Mortgage and family dependency gap analysis.</li>
+            <li>Premium-to-benefit trade-off modelling.</li>
+            <li>Ongoing policy suitability reviews as circumstances shift.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 py-28 lg:px-12">
+        <div className="grid gap-12 md:grid-cols-2">
+          <div className="flex min-h-[240px] flex-col justify-between rounded-2xl border border-[#0E1A2B]/10 bg-white p-8">
+            <h2 className="text-3xl font-semibold">Why Structured Advice</h2>
+            <p className="mt-5 text-lg leading-relaxed text-[#0E1A2B]/80">
+              Insurance outcomes improve when decision quality is managed with the same rigor as financial and operational planning.
+            </p>
+          </div>
+          <div className="flex min-h-[240px] flex-col justify-between rounded-2xl border border-[#0E1A2B]/10 bg-white p-8">
+            <ul className="space-y-4 text-base leading-relaxed text-[#0E1A2B]/80">
+              <li>Reduced coverage blind spots across high-impact scenarios.</li>
+              <li>More stable premium trajectory through disciplined portfolio design.</li>
+              <li>Clear internal and household decision accountability.</li>
+              <li>Consistent advisory documentation for future review cycles.</li>
             </ul>
-            <a
-              href="/icura"
-              className="mt-6 inline-flex items-center rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-800 transition hover:bg-slate-100"
-            >
-              Explore Personal Consultation
-            </a>
-          </article>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 py-28 lg:px-12">
+        <div className="rounded-2xl bg-[#0E1A2B] p-14 text-white">
+          <div className="grid items-center gap-12 md:grid-cols-2">
+            <div>
+              <h2 className="text-3xl font-semibold">Begin With A Structured Advisory Conversation</h2>
+              <p className="mt-4 text-lg leading-relaxed text-white/85">
+                Engage our team for a focused review of your current portfolio and a roadmap for resilient coverage decisions.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-4 md:justify-end">
+              <a
+                href="/advisor"
+                className="inline-flex items-center justify-center rounded-xl bg-[#C8A75E] px-6 py-3 text-sm font-semibold text-[#0E1A2B] transition-colors hover:bg-[#D5B777]"
+              >
+                Request Consultation
+              </a>
+              <a
+                href="/icura"
+                className="inline-flex items-center justify-center rounded-xl border border-white/30 px-6 py-3 text-sm font-semibold text-white transition-colors hover:border-[#C8A75E]"
+              >
+                Review Service Scope
+              </a>
+            </div>
+          </div>
         </div>
       </section>
     </main>
