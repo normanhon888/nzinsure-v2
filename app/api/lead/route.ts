@@ -126,15 +126,25 @@ const DEFAULT_OWNER = process.env.HS_OWNER_DEFAULT_ID?.trim() || undefined
 // helpers
 // ==========================
 
+function jsonResponse(
+  status: number,
+  payload: {
+    success: boolean
+    code: string
+    message: string
+    data: Record<string, unknown> | null
+  }
+) {
+  return NextResponse.json(payload, { status })
+}
+
 function jsonError(
   status: number,
-  error: string,
-  extra?: Record<string, unknown>
+  code: string,
+  message: string,
+  data: Record<string, unknown> | null = null
 ) {
-  return NextResponse.json(
-    { success: false, error, ...(extra ?? {}) },
-    { status }
-  )
+  return jsonResponse(status, { success: false, code, message, data })
 }
 
 function clamp(n: number, min: number, max: number) {
@@ -657,7 +667,7 @@ async function createDeal(params: {
 export async function POST(req: Request) {
   try {
     const raw = (await req.json().catch(() => null)) as Partial<LeadPayload> | null
-    if (!raw) return jsonError(400, 'Invalid JSON')
+    if (!raw) return jsonError(400, 'INVALID_JSON', 'Invalid JSON payload.')
 
     const data: LeadPayload = {
       name: safeTrim(raw.name),
@@ -668,17 +678,27 @@ export async function POST(req: Request) {
     }
 
     if (!data.name || !data.email || !data.type) {
-      return jsonError(400, 'Missing required fields')
+      return jsonError(
+        400,
+        'MISSING_REQUIRED_FIELDS',
+        'Name, email, and type are required.'
+      )
     }
     if (!['personal', 'business', 'project'].includes(data.type)) {
-      return jsonError(400, 'Invalid lead type')
+      return jsonError(400, 'INVALID_LEAD_TYPE', 'Invalid lead type.')
     }
     if (!isEmailValid(data.email)) {
-      return jsonError(400, 'Invalid email')
+      return jsonError(400, 'INVALID_EMAIL', 'Invalid email address.')
     }
 
     const token = process.env.HUBSPOT_TOKEN
-    if (!token) return jsonError(500, 'HubSpot token missing')
+    if (!token) {
+      return jsonError(
+        500,
+        'HUBSPOT_TOKEN_MISSING',
+        'HubSpot token is not configured.'
+      )
+    }
 
     // 计算评分 + owner（v5 orchestrator 的基础）
     const scoreInfo = computeLeadScore(data)
@@ -750,15 +770,19 @@ export async function POST(req: Request) {
         await patchDeal(token, recentOpenDeal.id, patch)
       }
 
-      return NextResponse.json({
+      return jsonResponse(200, {
         success: true,
-        mode: 'updated_existing_deal_within_24h',
-        contactCreated,
-        contactId,
-        dealId: recentOpenDeal.id,
-        pipelineId,
-        stageDecision: decision,
-        leadScore: scoreInfo
+        code: 'LEAD_UPDATED_EXISTING_DEAL',
+        message: 'Lead processed by updating an existing deal within 24 hours.',
+        data: {
+          mode: 'updated_existing_deal_within_24h',
+          contactCreated,
+          contactId,
+          dealId: recentOpenDeal.id,
+          pipelineId,
+          stageDecision: decision,
+          leadScore: scoreInfo
+        }
       })
     }
 
@@ -774,18 +798,22 @@ export async function POST(req: Request) {
       message: data.message
     })
 
-    return NextResponse.json({
+    return jsonResponse(200, {
       success: true,
-      mode: 'created_new_deal',
-      contactCreated,
-      contactId,
-      dealId: newDealId,
-      pipelineId,
-      stageId: initialStage(data.type),
-      leadScore: scoreInfo
+      code: 'LEAD_CREATED_NEW_DEAL',
+      message: 'Lead processed by creating a new deal.',
+      data: {
+        mode: 'created_new_deal',
+        contactCreated,
+        contactId,
+        dealId: newDealId,
+        pipelineId,
+        stageId: initialStage(data.type),
+        leadScore: scoreInfo
+      }
     })
   } catch (err) {
     console.error('Lead Engine error:', err)
-    return jsonError(500, 'Server error')
+    return jsonError(500, 'SERVER_ERROR', 'Server error.', null)
   }
 }
