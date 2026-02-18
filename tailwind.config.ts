@@ -1,6 +1,8 @@
 import type { Config } from "tailwindcss";
 import tokens from "./design-tokens/tokens.json";
 
+const t = tokens.global;
+
 const config: Config = {
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
@@ -10,23 +12,29 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: tokens.color.primary,
-        accent: tokens.color.accent,
-        surface: tokens.color.surface,
-        background: tokens.color.background,
+        primary: t.color.primary.value,
+        accent: t.color.accent.value,
+        surface: t.color.surface.value,
+        background: t.color.background.value,
       },
       borderRadius: {
-        card: tokens.radius.card,
-        button: tokens.radius.button,
+        card: t.radius.card.value,
+        button: t.radius.button.value,
       },
       spacing: {
-        section: tokens.spacing.section,
-        sectionMedium: tokens.spacing.sectionMedium,
-        cardPadding: tokens.spacing.cardPadding,
+        section: t.spacing.section.value,
+        sectionMedium: t.spacing.sectionMedium.value,
+        cardPadding: t.spacing.cardPadding.value,
       },
       fontSize: {
-        h1: tokens.typography.h1Size,
-        h2: tokens.typography.h2Size,
+        h1: t.fontSize.h1.value,
+        h2: t.fontSize.h2.value,
+      },
+      fontWeight: {
+        semibold: t.fontWeight.semibold.value,
+      },
+      lineHeight: {
+        tight: t.lineHeight.tight.value,
       },
     },
   },
