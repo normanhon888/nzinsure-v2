@@ -1,4 +1,8 @@
 import { NextResponse } from 'next/server'
+import {
+  acquireIdempotencyLock,
+  releaseIdempotencyLock
+} from '@/lib/redis-idempotency'
 
 export const runtime = 'nodejs'
 
@@ -41,6 +45,9 @@ const LEAD_SOURCE = getLeadSourceLabel()
 
 const IDEMPOTENCY_HOURS = Number(process.env.IDEMPOTENCY_HOURS ?? '24')
 const IDEMPOTENCY_WINDOW_MS = Math.max(1, IDEMPOTENCY_HOURS) * 60 * 60 * 1000
+const LEAD_LOCK_TTL_SECONDS = Number(
+  process.env.LEAD_IDEMPOTENCY_LOCK_TTL_SECONDS ?? '90'
+)
 
 function envTag(): 'prod' | 'preview' | 'local' {
   const v = (process.env.VERCEL_ENV ?? '').toLowerCase()
@@ -147,6 +154,10 @@ function jsonError(
   return jsonResponse(status, { success: false, code, message, data })
 }
 
+function logLeadFailure(event: string, status?: number) {
+  console.error('api.lead.failure', { event, status: status ?? null })
+}
+
 function clamp(n: number, min: number, max: number) {
   return Math.min(max, Math.max(min, n))
 }
@@ -238,7 +249,7 @@ function computeLeadScore(data: LeadPayload): {
   return { score, band, reasons }
 }
 
-function pickOwnerId(type: LeadType, score: number): string | undefined {
+function pickOwnerId(type: LeadType): string | undefined {
   // 先按 type 分流；未来可扩展 score/region/workload
   return OWNER_BY_TYPE[type] || DEFAULT_OWNER
 }
@@ -342,7 +353,7 @@ async function upsertContact(params: {
 
   // 409 => 已存在，改走 update
   if (create.status !== 409) {
-    console.error('HubSpot contact create failed:', create.status, create.data ?? create.text)
+    logLeadFailure('hubspot_contact_create_failed', create.status)
     throw new Error(`contact_create_failed:${create.status}`)
   }
 
@@ -353,7 +364,7 @@ async function upsertContact(params: {
   )
 
   if (!existing.ok || !existing.data?.id) {
-    console.error('HubSpot contact lookup failed:', existing.status, existing.data ?? existing.text)
+    logLeadFailure('hubspot_contact_lookup_failed', existing.status)
     throw new Error(`contact_lookup_failed:${existing.status}`)
   }
 
@@ -366,7 +377,7 @@ async function upsertContact(params: {
   })
 
   if (!update.ok) {
-    console.error('HubSpot contact update failed:', update.status, update.data ?? update.text)
+    logLeadFailure('hubspot_contact_update_failed', update.status)
     throw new Error(`contact_update_failed:${update.status}`)
   }
 
@@ -389,7 +400,7 @@ async function getDealIdsForContact(token: string, contactId: string) {
   )
 
   if (!res.ok) {
-    console.error('HubSpot associations (contact->deals) failed:', res.status, res.data ?? res.text)
+    logLeadFailure('hubspot_associations_contact_to_deals_failed', res.status)
     return [] as string[]
   }
 
@@ -417,7 +428,7 @@ async function batchReadDeals(token: string, dealIds: string[]): Promise<DealRec
   })
 
   if (!res.ok) {
-    console.error('HubSpot deal batch read failed:', res.status, res.data ?? res.text)
+    logLeadFailure('hubspot_deal_batch_read_failed', res.status)
     return []
   }
 
@@ -599,7 +610,7 @@ async function patchDeal(token: string, dealId: string, properties: Record<strin
   })
 
   if (!res.ok) {
-    console.error('HubSpot deal patch failed:', res.status, res.data ?? res.text)
+    logLeadFailure('hubspot_deal_patch_failed', res.status)
     throw new Error(`deal_patch_failed:${res.status}`)
   }
 }
@@ -653,7 +664,7 @@ async function createDeal(params: {
   })
 
   if (!res.ok) {
-    console.error('HubSpot deal create failed:', res.status, res.data ?? res.text)
+    logLeadFailure('hubspot_deal_create_failed', res.status)
     throw new Error(`deal_create_failed:${res.status}`)
   }
 
@@ -665,6 +676,9 @@ async function createDeal(params: {
 // ==========================
 
 export async function POST(req: Request) {
+  let lockKey: string | null = null
+  let lockValue: string | null = null
+
   try {
     const raw = (await req.json().catch(() => null)) as Partial<LeadPayload> | null
     if (!raw) return jsonError(400, 'INVALID_JSON', 'Invalid JSON payload.')
@@ -700,9 +714,28 @@ export async function POST(req: Request) {
       )
     }
 
+    lockKey = `lead:create:${data.type}:${data.email}`
+    lockValue = crypto.randomUUID()
+    const lockAcquired = await acquireIdempotencyLock(
+      lockKey,
+      lockValue,
+      LEAD_LOCK_TTL_SECONDS
+    )
+
+    if (!lockAcquired) {
+      console.info('api.lead.idempotency_conflict', {
+        type: data.type
+      })
+      return jsonError(
+        409,
+        'LEAD_IN_PROGRESS',
+        'A lead for this email is already being processed.'
+      )
+    }
+
     // 计算评分 + owner（v5 orchestrator 的基础）
     const scoreInfo = computeLeadScore(data)
-    const ownerId = pickOwnerId(data.type, scoreInfo.score)
+    const ownerId = pickOwnerId(data.type)
 
     // ==========================
     // 1) UPSERT CONTACT
@@ -813,7 +846,16 @@ export async function POST(req: Request) {
       }
     })
   } catch (err) {
-    console.error('Lead Engine error:', err)
+    console.error('api.lead.failure', {
+      event: 'lead_engine_error',
+      code: err instanceof Error ? err.message : 'unknown_error'
+    })
     return jsonError(500, 'SERVER_ERROR', 'Server error.', null)
+  } finally {
+    if (lockKey && lockValue) {
+      await releaseIdempotencyLock(lockKey, lockValue).catch(() => {
+        console.error('api.lead.failure', { event: 'redis_lock_release_failed' })
+      })
+    }
   }
 }

@@ -1,0 +1,20 @@
+name: RuleGate Security Check
+
+on:
+  pull_request:
+
+jobs:
+  rulegate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - run: npm install
+
+      - name: Run PII Scan
+        run: npm run security:pii

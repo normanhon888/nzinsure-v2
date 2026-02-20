@@ -12,11 +12,12 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: t.color.primary.value,
-        accent: t.color.accent.value,
-        surface: t.color.surface.value,
-        background: t.color.background.value,
+        primary: "var(--color-primary)",
+        accent: "var(--color-accent)",
+        background: "var(--color-background)",
+        surface: "var(--color-surface)",
       },
+
       borderRadius: {
         card: t.radius.card.value,
         button: t.radius.button.value,

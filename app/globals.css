@@ -25,3 +25,23 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+:root {
+  --color-primary: theme('colors.primary');
+  --color-background: theme('colors.background');
+  --color-surface: theme('colors.surface');
+}
+
+.theme-light {
+  --color-primary: #0E1A2B;
+  --color-background: #F5F7FA;
+  --color-surface: #FFFFFF;
+}
+
+.theme-dark {
+  --color-primary: #FFFFFF;
+  --color-background: #0E1A2B;
+  --color-surface: #111827;
+}
+
+
