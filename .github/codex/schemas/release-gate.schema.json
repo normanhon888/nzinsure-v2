@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["breaking_changes","security_risks","data_migration_risks","rollback_notes"],
+  "properties": {
+    "breaking_changes": { "type": "array", "items": { "$ref": "#/$defs/riskItem" } },
+    "security_risks": { "type": "array", "items": { "$ref": "#/$defs/riskItem" } },
+    "data_migration_risks": { "type": "array", "items": { "$ref": "#/$defs/riskItem" } },
+    "rollback_notes": { "type": "array", "items": { "type": "string" } }
+  },
+  "$defs": {
+    "riskItem": {
+      "type": "object",
+      "required": ["risk","files","severity"],
+      "properties": {
+        "risk": { "type": "string", "minLength": 1 },
+        "files": { "type": "array", "items": { "type": "string" } },
+        "severity": { "type": "string", "enum": ["high","medium","low"] }
+      }
+    }
+  }
+}
