@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/release-risk.json",
+  "title": "ReleaseRiskReport",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "breaking_changes",
+    "security_risks",
+    "data_migration_risks",
+    "rollback_notes"
+  ],
+  "properties": {
+    "breaking_changes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/riskItem"
+      }
+    },
+    "security_risks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/riskItem"
+      }
+    },
+    "data_migration_risks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/riskItem"
+      }
+    },
+    "rollback_notes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "$defs": {
+    "riskItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "risk",
+        "severity"
+      ],
+      "properties": {
+        "risk": {
+          "type": "string",
+          "minLength": 1
+        },
+        "severity": {
+          "type": "string",
+          "enum": [
+            "critical",
+            "high",
+            "medium",
+            "low"
+          ]
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}
