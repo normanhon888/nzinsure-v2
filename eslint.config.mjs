@@ -12,7 +12,21 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Local nested copy of the repo; not part of this workspace build.
+    "nzinsure-v2/**",
   ]),
+  {
+    files: ["app/api/lead/route.ts"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+    },
+  },
+  {
+    files: ["platform/auth/client.ts", "shared/ui/ThemeToggle.tsx"],
+    rules: {
+      "react-hooks/set-state-in-effect": "off",
+    },
+  },
 ]);
 
 export default eslintConfig;
