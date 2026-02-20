@@ -23,6 +23,9 @@ jobs:
             ${{ github.event.pull_request.base.ref }} \
             +refs/pull/${{ github.event.pull_request.number }}/head
 
+      - name: Prepare Codex home
+        run: mkdir -p "${{ runner.temp }}/codex-home"
+
       - name: Run Codex review
         id: run_codex
         uses: openai/codex-action@v1
@@ -30,6 +33,7 @@ jobs:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
           prompt-file: .github/codex/prompts/review.md
           safety-strategy: drop-sudo
+          codex-home: ${{ runner.temp }}/codex-home
 
   post_feedback:
     runs-on: ubuntu-latest
