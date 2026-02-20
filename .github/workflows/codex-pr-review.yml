@@ -31,7 +31,6 @@ jobs:
           prompt-file: .github/codex/prompts/review.md
           safety-strategy: drop-sudo
           sandbox: read-only
-          read-only: true
 
   post_feedback:
     runs-on: ubuntu-latest
